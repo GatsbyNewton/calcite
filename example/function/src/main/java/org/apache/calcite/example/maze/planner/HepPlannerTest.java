@@ -11,14 +11,17 @@ import org.apache.calcite.prepare.CalciteCatalogReader;
 import org.apache.calcite.rel.RelDistributionTraitDef;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.RelRoot;
+import org.apache.calcite.rel.rel2sql.RelToSqlConverter;
 import org.apache.calcite.rel.rules.FilterJoinRule;
 import org.apache.calcite.rel.rules.PruneEmptyRules;
 import org.apache.calcite.rel.rules.ReduceExpressionsRule;
 import org.apache.calcite.rel.type.RelDataTypeSystem;
 import org.apache.calcite.rex.RexBuilder;
 import org.apache.calcite.schema.SchemaPlus;
+import org.apache.calcite.sql.SqlDialect;
 import org.apache.calcite.sql.SqlExplainLevel;
 import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.dialect.AnsiSqlDialect;
 import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.type.SqlTypeFactoryImpl;
@@ -112,6 +115,8 @@ public class HepPlannerTest {
         relNode = planner.findBestExp();
         System.out.println("The BEST Relational Expression string: \n" +
                 RelOptUtil.toString(relNode, SqlExplainLevel.ALL_ATTRIBUTES));
+        RelToSqlConverter relToSqlConverter = new RelToSqlConverter(AnsiSqlDialect.DEFAULT);
+        System.out.println("Select: \n" + relToSqlConverter.visitRoot(relNode).asSelect());
 
     }
 }
